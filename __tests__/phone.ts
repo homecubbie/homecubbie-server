@@ -107,6 +107,8 @@ export function dataKey(household: Household): Buffer {
 
 export class Phone {
   readonly id = randomBytes(12).toString("base64url");
+  /** A browser says so when it joins; a phone says nothing. */
+  device: "browser" | null = null;
   readonly privateKey: KeyObject;
   readonly publicKey: Buffer;
   /** Its Ed25519 key, which signs its key changes, vouches and arrival. */
@@ -395,6 +397,7 @@ export class Phone {
         signingKey: this.signing.publicKey.toString("base64url"),
         arrival: signText(door.door.privateKey, arrival).toString("base64url"),
         arrivalOwn: signText(this.signing.privateKey, arrival).toString("base64url"),
+        ...(this.device === "browser" ? { device: "browser" } : {}),
       },
     });
     if (answer.status !== 200) return answer;

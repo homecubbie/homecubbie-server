@@ -312,6 +312,24 @@ describe("inviting a phone", () => {
     });
   });
 
+  it("lists a browser that joined as a browser, and a phone as a phone", async () => {
+    await withServer(async (server) => {
+      const first = new Phone(server.baseUrl);
+      await first.claim(server.setupCode());
+      const browser = new Phone(server.baseUrl);
+      browser.device = "browser";
+      assert.equal((await browser.join(await first.invite(), first.serverKey as Buffer)).status, 200);
+      const phone = new Phone(server.baseUrl);
+      assert.equal((await phone.join(await first.invite(), first.serverKey as Buffer)).status, 200);
+
+      const listed = (await first.call("GET", "/api/phones")).json.phones as { phoneId: string; kind: string }[];
+      const kindOf = (id: string) => listed.find((entry) => entry.phoneId === id)?.kind;
+      assert.equal(kindOf(first.id), "phone");
+      assert.equal(kindOf(browser.id), "browser");
+      assert.equal(kindOf(phone.id), "phone");
+    });
+  });
+
   it("forgets an invite once it has expired", async () => {
     let now = Date.now();
     await withServer(
@@ -1059,6 +1077,8 @@ describe("signed key changes", () => {
     const store = new Store(dir);
     assert.equal(store.findPhone("p")?.signing_key, null);
     assert.equal(store.findPhone("p")?.door, null);
+    // A folder from before browsers were told apart lists its members as phones.
+    assert.equal(store.findPhone("p")?.device, null);
     assert.equal(store.findRekey(2)?.statement, null);
     store.close();
     rmSync(dir, { recursive: true, force: true });

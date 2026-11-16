@@ -29,7 +29,7 @@ import { Store, type CopyRow, type PhoneRow } from "./store.ts";
 export const PROTOCOL = 2;
 
 /** This server's version, as `package.json` has it; a test keeps the two equal. The setup guide names it. */
-export const SERVER_VERSION = "0.1.2";
+export const SERVER_VERSION = "0.1.3";
 
 export const LIMITS = {
   /** A wrong setup code this many times prints a new one. */
@@ -457,6 +457,8 @@ export class Household {
     signingKey: Buffer;
     arrival: Buffer;
     arrivalOwn: Buffer;
+    /** A browser says so, for the phones to draw it as one. */
+    device?: "browser" | null;
   }): { phone: PhoneRow; packet: Buffer } {
     if (!isId(input.phoneId)) throw new Refusal("bad-request");
     this.requireUsablePhoneKey(input.phoneKey, this.householdId());
@@ -494,6 +496,7 @@ export class Household {
         now: this.nowIso(),
         signingKey: input.signingKey,
         door: arrivalOf(door, input),
+        device: input.device ?? null,
       });
       return { phone: this.requirePhone(input.phoneId), packet: Buffer.from(packet) };
     });
@@ -591,7 +594,9 @@ export class Household {
       phoneId: phone.id,
       phoneKey: Buffer.from(phone.public_key).toString("base64url"),
       nameBlob: Buffer.from(phone.name_blob).toString("base64url"),
-      kind: phone.kind,
+      // A browser is listed as one. A phone from before this reads
+      // any kind it doesn't know as a phone, which is what it drew already.
+      kind: phone.device === "browser" ? "browser" : phone.kind,
       joinedAt: phone.joined_at,
       lastSeenAt: phone.last_seen_at,
       removed: phone.removed_at !== null,

@@ -223,6 +223,8 @@ async function handle(
       signingKey: decode(input.signingKey, 32),
       arrival: decode(input.arrival, 64),
       arrivalOwn: decode(input.arrivalOwn, 64),
+      // Only "browser" means anything; whatever else is a phone.
+      device: input.device === "browser" ? "browser" : null,
     });
     return {
       reply: {

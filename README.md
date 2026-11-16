@@ -24,14 +24,14 @@ guide, Settings › Sharing › How to set up a server, gives the same commands.
 - **npm**, for a Mac or a PC with Node 22.18 or later:
 
   ```sh
-  npx homecubbie-server@0.1.2
+  npx homecubbie-server@0.1.3
   ```
 
 - **GitHub's container registry**, for a NAS, a Raspberry Pi, or another Linux
   computer with Docker. The image is built for amd64 and arm64:
 
   ```sh
-  docker run -d --name homecubbie --restart unless-stopped --network host -v homecubbie:/data ghcr.io/homecubbie/homecubbie-server:0.1.2
+  docker run -d --name homecubbie --restart unless-stopped --network host -v homecubbie:/data ghcr.io/homecubbie/homecubbie-server:0.1.3
   ```
 
 - **The code**, at <https://github.com/homecubbie/homecubbie-server>. It's
@@ -214,7 +214,7 @@ and every other phone joins the new server again with an invite.
 
 | | In clear | Encrypted on the phone |
 |---|---|---|
-| Phones | a random id, public key, signing key, the door it came in by with its maker's vouch and its arrival's signatures, when joined and last seen, whether removed | the phone's name |
+| Phones | a random id, public key, signing key, the door it came in by with its maker's vouch and its arrival's signatures, when joined and last seen, whether removed, and whether it's a browser | the phone's name |
 | Key changes | epoch, which phone made it, its proof, and its statement as signed: the new key's hash, its kind, the phone it removed, and the roster's public keys | the new key, wrapped for each phone |
 | Changes | arrival number, which phone, its batch number, key epoch, schema version | the change itself |
 | Full copies | key epoch, schema version, which change it runs to, size | the house |

@@ -31,7 +31,10 @@ const SCHEMA = `
     -- vouch for it, and the arrival's two signatures). What the phones
     -- signed, kept as it came; this server checks none of it.
     signing_key BLOB,
-    door TEXT
+    door TEXT,
+    -- 'browser' for a browser that joined, so the phones can draw
+    -- it as one. Said by the browser, unsigned, like last_seen_at.
+    device TEXT CHECK (device IS NULL OR device = 'browser')
   );
 
   CREATE TABLE IF NOT EXISTS change (
@@ -132,6 +135,8 @@ export interface PhoneRow {
   signing_key: Uint8Array | null;
   /** JSON, as `Household.phones` lists it; null for the phone that set the server up or moved the household here. */
   door: string | null;
+  /** "browser" for a browser that joined; null for a phone, and for any member of a folder from before. */
+  device: "browser" | null;
 }
 
 export interface ChangeRow {
@@ -215,6 +220,8 @@ export class Store {
     // new folder.
     this.addColumn("phone", "signing_key", "BLOB");
     this.addColumn("phone", "door", "TEXT");
+    // A folder from before browsers were told apart: its browsers stay listed as phones.
+    this.addColumn("phone", "device", "TEXT CHECK (device IS NULL OR device = 'browser')");
     this.addColumn("invite", "door", "TEXT");
     this.addColumn("recovery", "door", "TEXT");
     for (const column of ["statement TEXT", "signature BLOB", "signed_by TEXT", "kind TEXT"]) {
@@ -289,12 +296,13 @@ export class Store {
     now: string;
     signingKey: Buffer;
     door: string | null;
+    device?: "browser" | null;
   }): void {
     this.db
       .prepare(
-        "INSERT INTO phone (id, public_key, name_blob, kind, joined_at, signing_key, door) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO phone (id, public_key, name_blob, kind, joined_at, signing_key, door, device) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       )
-      .run(row.id, row.publicKey, row.nameBlob, row.kind, row.now, row.signingKey, row.door);
+      .run(row.id, row.publicKey, row.nameBlob, row.kind, row.now, row.signingKey, row.door, row.device ?? null);
   }
 
   renamePhone(id: string, nameBlob: Buffer): void {
