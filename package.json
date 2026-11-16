@@ -1,0 +1,30 @@
+{
+  "name": "homecubbie-server",
+  "version": "0.1.2",
+  "description": "The household server for HomeCubbie sharing. It stores a household's encrypted data, can't read it, and never contacts anyone.",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "homepage": "https://github.com/homecubbie/homecubbie-server#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/homecubbie/homecubbie-server.git"
+  },
+  "type": "module",
+  "bin": {
+    "homecubbie-server": "dist/main.js"
+  },
+  "files": [
+    "dist",
+    "web"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm --prefix .. run export:server-web && npm run build",
+    "start": "node --disable-warning=ExperimentalWarning src/main.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --disable-warning=ExperimentalWarning --test --test-reporter=dot \"__tests__/**/*.test.ts\""
+  },
+  "dependencies": {}
+}

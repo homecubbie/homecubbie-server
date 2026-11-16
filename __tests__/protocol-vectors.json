@@ -1,0 +1,59 @@
+{
+  "inputs": {
+    "phonePrivateKey": "AQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyA",
+    "serverPrivateKey": "ISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0-P0A",
+    "ephemeralPrivateKey": "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2A",
+    "householdId": "hh-vector-0001",
+    "householdKey": "paWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaU",
+    "setupCode": "abcd-efgh-jklm-npqr",
+    "inviteSecret": "EBESExQVFhcYGRobHB0eHw",
+    "inviteId": "inv-vector-000001",
+    "phoneId": "phone-vector-01",
+    "request": {
+      "method": "POST",
+      "path": "/api/sync",
+      "time": 1789000000000,
+      "nonce": "AAAAAAAAAAAAAAAAAAAAAA",
+      "body": "{\"since\":0,\"batches\":[]}"
+    },
+    "reply": {
+      "status": 200,
+      "body": "{\"ok\":true}"
+    },
+    "batch": {
+      "epoch": 1,
+      "batch": 1,
+      "schemaVersion": 44,
+      "plaintext": "[{\"table\":\"note\",\"column\":\"value\",\"value\":\"4417\"}]"
+    },
+    "batchNonce": "BwcHBwcHBwcHBwcH",
+    "wrapEpoch": 2,
+    "wrapNonce": "CAgICAgICAgICAgI",
+    "recoveryCode": "MzMzMzMzMzMzMzMzMzMzMzMzMzM",
+    "signingSeed": "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXp7fH1-f4A"
+  },
+  "outputs": {
+    "phonePublicKey": "B6N8vBQgk8i3VdwbEOhstCY3StFqqFPtC9_AsrhtHHw",
+    "serverPublicKey": "WGmv9FBUlzLLqu1eXfmzCm2jHLDldCutWtShp2jxpns",
+    "ephemeralPublicKey": "ZLEBsdC-WocEvQePmJUAH8A-jp-VIvGI3RKNmEbUhGY",
+    "linkKey": "ins1nGmQ6dNj2KaA7RaU8xpUPUdB8jP-HPFtwWOdcwU",
+    "dataKey": "YpDj8Pz4NTVJpr5AKbe4xZFL7fieY_fb-74ptCCCLTs",
+    "claimKey": "wjaU_yADbN44-WdpRxBdtIMwx0d3saSc7_G0BMKHY-U",
+    "claimReplyKey": "xpEsKKxU8AwwUhxaHve5e9RIY48G14mj-VWoaYN7qEQ",
+    "copyReplyProof": "KWFaYSmLf_ZlLWEMCpv-gdkAyh6GWOlxtKhFUFfOIIY",
+    "invitePacketKey": "IA31F_er8pWtXtTea3vtfnTg0C7P_JRkzQaa1NGkV_o",
+    "inviteVerifier": "XnHTBfDH1Nle2vUtA61xu5eemJSuc3yrKRsX7oX9sZM",
+    "transportKey": "-74VYQXz5yTcIcOqvNxvwUD2t6R1qJl5VF424tlxBhY",
+    "requestProof": "IXxOh54VPlDDpHPR7QP1JlPyrwd-FgXM6kEZBWfyJug",
+    "replyProof": "yszvaO4QSmayIrFYCAoXqArm1VmTwV_34nk4nkr5Pg8",
+    "sealedBatch": "BwcHBwcHBwcHBwcHUO43dFicK22kxTXhXLttO9DUi7M7g73kZDTMC2iN69JrB4jECErSp-N1XSgtegF6bI6AKTpDYdpfOyw5RdnJzIvi",
+    "wrapBlob": "CAgICAgICAgICAgIF7JPEul-jPdZ1yR-5EbA16I6gHf5HBgmVtIobnmG6GeZCI9bpLULk4kSQfX2g7oN",
+    "recoveryId": "wmTb1-DSz_EbPmLD8Jq5AA",
+    "recoveryPacketKey": "acUCpsmys3gfczJds-icbM0nRE7abst-sV-XD-cP_T0",
+    "recoveryVerifier": "2Zn8Z0dHpShLZMskkKs9gfYAc8pMIsmOqd1Q4YGDuUI",
+    "signingPublicKey": "iC0Oo7KGTnpYfz5pjOpEWZmDEuZV4F-l6LURnYuqyM0",
+    "inviteDoorKey": "GC11hCtQjD1VZgNz8mvtxZVlUgoKVNJnFXOC1CRKfg8",
+    "recoveryDoorKey": "YyGA9qU2MgyaBszaYCcgBFGPtfijwdHNYBvk6OZJ4ag",
+    "vouchSignature": "LdjHAv3GXmKwvXZVhhEqwBUvtyqTQSOHyS2DiDCCQ2ow3SW_74LcalOEfxm4r9Wy7L0XGKxKsmmhgI3m__C1CQ"
+  }
+}
