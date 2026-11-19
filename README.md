@@ -24,14 +24,14 @@ guide, Settings › Sharing › How to set up a server, gives the same commands.
 - **npm**, for a Mac or a PC with Node 22.18 or later:
 
   ```sh
-  npx homecubbie-server@0.1.4
+  npx homecubbie-server@0.1.5
   ```
 
 - **GitHub's container registry**, for a NAS, a Raspberry Pi, or another Linux
   computer with Docker. The image is built for amd64 and arm64:
 
   ```sh
-  docker run -d --name homecubbie --restart unless-stopped --network host -v homecubbie:/data ghcr.io/homecubbie/homecubbie-server:0.1.4
+  docker run -d --name homecubbie --restart unless-stopped --network host -v homecubbie:/data ghcr.io/homecubbie/homecubbie-server:0.1.5
   ```
 
 - **The code**, at <https://github.com/homecubbie/homecubbie-server>. It's
@@ -192,8 +192,8 @@ folder: sharing hadn't shipped before it.
 ## Moving to a new server
 
 When the server's computer dies or its folder is lost, start a new server in a
-new folder, and on the phone that synced last use Settings › Sharing › Move to
-a new server, with the new server's setup code. The household keeps its id and takes a new key,
+new folder, and on the phone that synced last use Settings › Sharing › Server ›
+Move to a new server, with the new server's setup code. The household keeps its id and takes a new key,
 and every other phone joins the new server again with an invite.
 
 - **Delete the old folder, and never start the old server again.** Phones
