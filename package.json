@@ -1,6 +1,6 @@
 {
   "name": "homecubbie-server",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "The household server for HomeCubbie sharing. It stores a household's encrypted data, can't read it, and never contacts anyone.",
   "license": "PolyForm-Noncommercial-1.0.0",
   "homepage": "https://github.com/homecubbie/homecubbie-server#readme",

@@ -29,7 +29,7 @@ import { Store, type CopyRow, type PhoneRow } from "./store.ts";
 export const PROTOCOL = 2;
 
 /** This server's version, as `package.json` has it; a test keeps the two equal. The setup guide names it. */
-export const SERVER_VERSION = "0.1.5";
+export const SERVER_VERSION = "0.1.6";
 
 export const LIMITS = {
   /** A wrong setup code this many times prints a new one. */
@@ -600,6 +600,9 @@ export class Household {
       joinedAt: phone.joined_at,
       lastSeenAt: phone.last_seen_at,
       removed: phone.removed_at !== null,
+      // When it left or was removed, so the phones can say so. A
+      // phone from before this reads `removed` alone, as it did.
+      removedAt: phone.removed_at,
       // What it signed, and how it came in, for the phones to check.
       signingKey: phone.signing_key === null ? null : Buffer.from(phone.signing_key).toString("base64url"),
       door: phone.door === null ? null : (JSON.parse(phone.door) as unknown),
