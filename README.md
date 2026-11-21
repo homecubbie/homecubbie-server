@@ -24,14 +24,14 @@ guide, Settings › Sharing › How to set up a server, gives the same commands.
 - **npm**, for a Mac or a PC with Node 22.18 or later:
 
   ```sh
-  npx homecubbie-server@0.1.6
+  npx homecubbie-server@0.1.7
   ```
 
 - **GitHub's container registry**, for a NAS, a Raspberry Pi, or another Linux
   computer with Docker. The image is built for amd64 and arm64:
 
   ```sh
-  docker run -d --name homecubbie --restart unless-stopped --network host -v homecubbie:/data ghcr.io/homecubbie/homecubbie-server:0.1.6
+  docker run -d --name homecubbie --restart unless-stopped --network host -v homecubbie:/data ghcr.io/homecubbie/homecubbie-server:0.1.7
   ```
 
 - **The code**, at <https://github.com/homecubbie/homecubbie-server>. It's
@@ -60,11 +60,13 @@ docker run -d --name homecubbie --restart unless-stopped --network host -v homec
 | `HOMECUBBIE_HOSTS` | none | comma-separated names it may be reached by, such as `mac-mini.local`. It always answers to IP addresses and `localhost` |
 | `HOMECUBBIE_HTTPS_CERT`, `HOMECUBBIE_HTTPS_KEY` | none | a certificate and key: given both, it also listens over HTTPS on port 5008 (below) |
 | `HOMECUBBIE_ALLOW_ANY_ADDRESS` | off | `1` to answer any address. Otherwise it closes a connection from anything but this computer and a home network's address ranges: `10.x`, `172.16`–`172.31`, `192.168.x`, link-local, `100.64/10` (Tailscale's), and IPv6's private and link-local ranges |
+| `HOMECUBBIE_THIS_COMPUTER_ONLY` | off | `1` to answer this computer and nothing else: a browser on it at `localhost` still works, and every other connection is closed. Not with `HOMECUBBIE_ALLOW_ANY_ADDRESS` |
 
 **It answers only the home network, even if a router would let the internet
 in.** A computer's IPv6 address is often public, and not every router blocks
-strangers from it. A café's Wi-Fi uses home ranges too, so stop the server
-when its laptop leaves home.
+strangers from it. A café's Wi-Fi uses home ranges too, so when its laptop
+leaves home, stop the server, or start it with `HOMECUBBIE_THIS_COMPUTER_ONLY=1`
+until it's back.
 
 **In Docker, run it on the host's network** (`--network host`, or "host" in a
 NAS's container app), never behind a published port. Docker publishes `-p` on

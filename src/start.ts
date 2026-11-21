@@ -8,6 +8,10 @@
  *   HOMECUBBIE_ALLOW_ANY_ADDRESS
  *                     1 to answer any address. Otherwise it answers only this computer
  *                     and the home network's address ranges (`home-network.ts`).
+ *   HOMECUBBIE_THIS_COMPUTER_ONLY
+ *                     1 to answer this computer and nothing else: for a laptop away
+ *                     from home, where a café's Wi-Fi uses the home ranges too.
+ *                     It can't be given with HOMECUBBIE_ALLOW_ANY_ADDRESS.
  *   HOMECUBBIE_HTTPS_CERT, HOMECUBBIE_HTTPS_KEY
  *                     a certificate and key for a name in HOMECUBBIE_HOSTS: given both,
  *                     it also listens over HTTPS on port 5008, for a browser on another
@@ -40,13 +44,20 @@ if (certificate === "half") {
   console.error("homecubbie-server: HTTPS needs both HOMECUBBIE_HTTPS_CERT and HOMECUBBIE_HTTPS_KEY, or neither.");
   process.exit(1);
 }
+const anyAddress = process.env.HOMECUBBIE_ALLOW_ANY_ADDRESS === "1";
+const thisComputerOnly = process.env.HOMECUBBIE_THIS_COMPUTER_ONLY === "1";
+if (anyAddress && thisComputerOnly) {
+  console.error("homecubbie-server: HOMECUBBIE_ALLOW_ANY_ADDRESS and HOMECUBBIE_THIS_COMPUTER_ONLY say opposite things. Give one, or neither.");
+  process.exit(1);
+}
 
 const household = new Household(dataDir, { log });
 const web = loadWebApp(join(import.meta.dirname, "..", "web"));
 const options = {
   hostNames,
   webApp: "app" in web ? web.app : null,
-  anyAddress: process.env.HOMECUBBIE_ALLOW_ANY_ADDRESS === "1",
+  anyAddress,
+  thisComputerOnly,
   log,
 };
 const server = createHouseholdServer(household, options);
@@ -60,7 +71,12 @@ secure?.server.listen(HTTPS_PORT, () => {
 server.listen(port, () => {
   log.info(`keeping the household's data in ${dataDir}`);
   if (options.anyAddress) log.info("answering any address (HOMECUBBIE_ALLOW_ANY_ADDRESS=1).");
-  for (const address of homeAddresses()) log.info(`listening at http://${address}:${port}`);
+  if (options.thisComputerOnly) {
+    log.info("answering this computer only (HOMECUBBIE_THIS_COMPUTER_ONLY=1).");
+    log.info(`listening at http://localhost:${port}`);
+  } else {
+    for (const address of homeAddresses()) log.info(`listening at http://${address}:${port}`);
+  }
   if ("app" in web) {
     log.info(`the web app, for database version ${web.app.schemaVersion}, is at http://localhost:${port} on this computer.`);
     log.info("On another computer it needs HTTPS: see the server's README.");

@@ -1,7 +1,9 @@
 /**
  * Which addresses the server answers: this computer,
  * and the address ranges a home network uses. Started with
- * `HOMECUBBIE_ALLOW_ANY_ADDRESS=1`, it answers any.
+ * `HOMECUBBIE_ALLOW_ANY_ADDRESS=1`, it answers any. Started with
+ * `HOMECUBBIE_THIS_COMPUTER_ONLY=1`, it answers this computer and nothing
+ * else, whatever else it's told: for a laptop away from home.
  *
  * It listens on every network its computer is on, because it can't know
  * which one is home. Most home routers stop strangers on the internet
@@ -11,9 +13,10 @@
  * the internet can't reach the server even where a router would let it.
  *
  * What it doesn't stop:
- * - Another network that uses the same ranges, a café's Wi-Fi say. That stays
- *   open in this version, and the README tells a laptop's household to stop
- *   the server when it leaves home.
+ * - Another network that uses the same ranges, a café's Wi-Fi say. The server
+ *   can't tell it from home, so the README tells a laptop's household to stop
+ *   the server when it leaves home, or to start it answering this computer
+ *   only.
  * - Anything behind Docker's port mapping. A published port (`-p`) hands its
  *   IPv6 connections to the container from Docker's own bridge, a private
  *   address, so this check would pass them. That's why every guide starts
@@ -22,9 +25,11 @@
  */
 import { isIP, type Server, type Socket } from "node:net";
 
-/** Every address, or only home ones, and where a refusal is said. */
+/** Every address, only home ones, or only this computer, and where a refusal is said. */
 export interface AddressRule {
   anyAddress?: boolean;
+  /** Only this computer, even when `anyAddress` is also given: the narrower rule wins. */
+  thisComputerOnly?: boolean;
   log?: { info(line: string): void };
 }
 
@@ -51,22 +56,46 @@ export function isHomeAddress(address: string | undefined): boolean {
 }
 
 /**
+ * True for this computer's own addresses and nothing else: `127/8`, `::1`, and
+ * `127/8` written as IPv6. Not the computer's addresses on its networks, which
+ * anyone on the same Wi-Fi can also reach.
+ */
+export function isThisComputer(address: string | undefined): boolean {
+  if (address === undefined) return false;
+  const bare = address.replace(/%.*$/, "");
+  const kind = isIP(bare);
+  if (kind === 4) return ipv4Parts(bare)[0] === 127;
+  if (kind !== 6) return false;
+  const groups = ipv6Groups(bare);
+  const group = (at: number): number => groups[at] ?? 0;
+  if (groups.slice(0, 7).every((value) => value === 0) && group(7) === 1) return true;
+  const mapped = groups.slice(0, 5).every((value) => value === 0) && group(5) === 0xffff;
+  return mapped && group(6) >> 8 === 127;
+}
+
+/**
  * Closes, before anything is read, every connection from outside the home
- * ranges. It goes first among the server's connection listeners, so the
- * HTTP or TLS side never sees one. The first refusal is logged, with how to
- * allow any address; the ones after aren't, so a scan can't fill the log.
+ * ranges, or from anything but this computer when told to answer it only. It
+ * goes first among the server's connection listeners, so the HTTP or TLS side
+ * never sees one. The first refusal is logged, with what to change; the ones
+ * after aren't, so a scan can't fill the log.
  */
 export function answerHomeOnly(server: Server, rule: AddressRule): void {
-  if (rule.anyAddress === true) return;
+  const thisComputerOnly = rule.thisComputerOnly === true;
+  if (rule.anyAddress === true && !thisComputerOnly) return;
+  const answers = thisComputerOnly ? isThisComputer : isHomeAddress;
   let told = false;
   server.prependListener("connection", function refuseOutsideHome(socket: Socket) {
-    if (isHomeAddress(socket.remoteAddress)) return;
+    if (answers(socket.remoteAddress)) return;
     socket.destroy();
     if (told) return;
     told = true;
+    const from = socket.remoteAddress ?? "an unknown address";
     rule.log?.info(
-      `refused a connection from ${socket.remoteAddress ?? "an unknown address"}, which isn't this computer or a home network's address. ` +
-        "To answer any address, start the server with HOMECUBBIE_ALLOW_ANY_ADDRESS=1.",
+      thisComputerOnly
+        ? `refused a connection from ${from}: this server answers only this computer (HOMECUBBIE_THIS_COMPUTER_ONLY=1).`
+        : `refused a connection from ${from}, which isn't this computer or a home network's address. ` +
+            "To answer any address, start the server with HOMECUBBIE_ALLOW_ANY_ADDRESS=1.",
     );
   });
 }

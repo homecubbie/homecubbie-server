@@ -41,6 +41,8 @@ export interface ServerOptions {
   webApp?: WebApp | null;
   /** Answer any address, not only this computer and the home ranges (`home-network.ts`). */
   anyAddress?: boolean;
+  /** Answer this computer and nothing else, even with `anyAddress` (`home-network.ts`). */
+  thisComputerOnly?: boolean;
   /** Where the server says what it refused. */
   log?: { info(line: string): void };
 }

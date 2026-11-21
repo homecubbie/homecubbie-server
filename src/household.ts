@@ -29,7 +29,7 @@ import { Store, type CopyRow, type PhoneRow } from "./store.ts";
 export const PROTOCOL = 2;
 
 /** This server's version, as `package.json` has it; a test keeps the two equal. The setup guide names it. */
-export const SERVER_VERSION = "0.1.6";
+export const SERVER_VERSION = "0.1.7";
 
 export const LIMITS = {
   /** A wrong setup code this many times prints a new one. */
