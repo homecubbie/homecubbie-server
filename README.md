@@ -24,14 +24,14 @@ guide, Settings › Sharing › How to set up a server, gives the same commands.
 - **npm**, for a Mac or a PC with Node 22.18 or later:
 
   ```sh
-  npx homecubbie-server@0.1.9
+  npx homecubbie-server@0.1.10
   ```
 
 - **GitHub's container registry**, for a NAS, a Raspberry Pi, or another Linux
   computer with Docker. The image is built for amd64 and arm64:
 
   ```sh
-  docker run -d --name homecubbie --restart unless-stopped --network host -v homecubbie:/data ghcr.io/homecubbie/homecubbie-server:0.1.9
+  docker run -d --name homecubbie --restart unless-stopped --network host -v homecubbie:/data ghcr.io/homecubbie/homecubbie-server:0.1.10
   ```
 
 - **The code**, at <https://github.com/homecubbie/homecubbie-server>. It's

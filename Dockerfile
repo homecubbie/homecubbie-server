@@ -7,7 +7,7 @@
 # Published as ghcr.io/homecubbie/homecubbie-server, for amd64 and arm64:
 #
 #   docker run -d --name homecubbie --restart unless-stopped \
-#     --network host -v homecubbie:/data ghcr.io/homecubbie/homecubbie-server:0.1.9
+#     --network host -v homecubbie:/data ghcr.io/homecubbie/homecubbie-server:0.1.10
 #
 # On the host's network, never behind -p: Docker hands a published port's IPv6
 # connections to the container from its own bridge, and the server's
